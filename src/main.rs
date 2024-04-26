@@ -54,7 +54,7 @@ fn handle_option(option: String, company: &mut HashMap<String, Vec<String>>) -> 
             None
         }
         Some(Command::All) => {
-            println!("All");
+            list_all_departments_with_employees(company);
             None
         }
         Some(Command::Exit) => {
@@ -105,6 +105,14 @@ fn add_employee_to_department(
         "Added {} to {} department successfully!!!",
         employee_name, department
     );
+}
+
+fn list_all_departments_with_employees(company: &mut HashMap<String, Vec<String>>) {
+    for (department, employees) in company.iter() {
+        println!("Employees in the {} department:", department);
+        sort_and_print_employees(employees.to_vec());
+        println!();
+    }
 }
 
 fn list_employees_by_department(department: &String, company: &mut HashMap<String, Vec<String>>) {
