@@ -46,7 +46,7 @@ fn clear_screen() {
 fn handle_option(option: String, company: &mut HashMap<String, Vec<String>>) -> Option<u8> {
     match Command::from_input(option) {
         Some(Command::Add { name, department }) => {
-            add_employee_to_department(name, department, company);
+            add_employee_to_department(&name, &department, company);
             None
         }
         Some(Command::List(department)) => {
@@ -58,7 +58,7 @@ fn handle_option(option: String, company: &mut HashMap<String, Vec<String>>) -> 
             None
         }
         Some(Command::Exit) => {
-            println!("Exiting...");
+            println!("Exiting...\n");
             Some(1)
         }
         None => None,
@@ -93,9 +93,16 @@ impl Command {
 }
 
 fn add_employee_to_department(
-    employee_name: String,
-    department: String,
+    employee_name: &String,
+    department: &String,
     company: &mut HashMap<String, Vec<String>>,
 ) {
-    // company.entry(department).or_insert(Vec::new()).push(employee_name);
+    company
+        .entry(department.to_string())
+        .or_insert(Vec::new())
+        .push(employee_name.to_string());
+    println!(
+        "Added {} to {} department successfully!!!",
+        employee_name, department
+    );
 }
