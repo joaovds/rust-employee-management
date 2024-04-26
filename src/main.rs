@@ -9,22 +9,46 @@ fn main() {
     loop {
         clear_screen();
 
-        println!("Employee Department Management System");
-        println!("================ ... ================\n");
+        println!(
+            "{}",
+            Colors::Cyan.print("Employee Department Management System")
+        );
+        println!(
+            "{}",
+            Colors::Cyan.print("=====================================")
+        );
 
-        println!("Type 'Add <name> to <department>' to add an employee to a department");
-        println!("Type 'List <department>' to list all employees in a department");
-        println!("Type 'All' to list all employees in all departments");
-        println!("Type 'Exit' to exit the program");
-        println!("================ ... ================");
+        println!("{}", Colors::Blue.print("Type \x1B[3m'Add <name> to <department>'\x1B[23m to add an employee to a department"));
+        println!(
+            "{}",
+            Colors::Blue.print(
+                "Type \x1B[3m'List <department>'\x1B[23m to list all employees in a department"
+            )
+        );
+        println!(
+            "{}",
+            Colors::Blue
+                .print("Type \x1B[3m'All'\x1B[23m to list all employees in all departments")
+        );
+        println!(
+            "{}",
+            Colors::Blue.print("Type \x1B[3m'Exit'\x1B[23m to exit the program")
+        );
+        println!(
+            "{}",
+            Colors::Cyan.print("================ ... ================")
+        );
 
         let mut option = String::new();
-        print!("Enter option: ");
+        print!("{}", Colors::Cyan.print("Enter option: "));
         io::stdout().flush().unwrap();
         io::stdin()
             .read_line(&mut option)
             .expect("Failed to read line");
-        println!("================ ... ================\n");
+        println!(
+            "{}",
+            Colors::Cyan.print("================ ... ================\n")
+        );
 
         if let Some(status) = handle_option(option, &mut company) {
             if status == 1 {
@@ -32,7 +56,7 @@ fn main() {
             }
         }
 
-        println!("\nPress Enter to continue...");
+        println!("{}", Colors::Green.print("\nPress Enter to continue..."));
         io::stdin()
             .read_line(&mut String::new())
             .expect("Failed to read line");
@@ -58,7 +82,7 @@ fn handle_option(option: String, company: &mut HashMap<String, Vec<String>>) -> 
             None
         }
         Some(Command::Exit) => {
-            println!("Exiting...\n");
+            println!("{}", Colors::Red.print("Exiting...\n"));
             Some(1)
         }
         None => None,
@@ -85,7 +109,7 @@ impl Command {
             ["All"] => Some(Command::All),
             ["Exit"] => Some(Command::Exit),
             _ => {
-                println!("Invalid command!");
+                println!("{}", Colors::Red.print("Invalid command!"));
                 None
             }
         }
@@ -102,14 +126,23 @@ fn add_employee_to_department(
         .or_insert(Vec::new())
         .push(employee_name.to_string());
     println!(
-        "Added {} to {} department successfully!!!",
-        employee_name, department
+        "{}",
+        Colors::Green.print(&format!(
+            "Added \x1B[1m{}\x1B[22m to \x1B[1m{}\x1B[22m department successfully!!!",
+            employee_name, department
+        ))
     );
 }
 
 fn list_all_departments_with_employees(company: &mut HashMap<String, Vec<String>>) {
     for (department, employees) in company.iter() {
-        println!("Employees in the {} department:", department);
+        println!(
+            "{}",
+            Colors::Magenta.print(&format!(
+                "Employees in the \x1B[1m{}\x1B[22m department:",
+                department
+            ))
+        );
         sort_and_print_employees(employees.to_vec());
         println!();
     }
@@ -117,10 +150,22 @@ fn list_all_departments_with_employees(company: &mut HashMap<String, Vec<String>
 
 fn list_employees_by_department(department: &String, company: &mut HashMap<String, Vec<String>>) {
     if let Some(department_employees) = company.get(department) {
-        println!("Employees in the {} department:", department);
+        println!(
+            "{}",
+            Colors::Magenta.print(&format!(
+                "Employees in the \x1B[1m{}\x1B[22m department:",
+                department
+            ))
+        );
         sort_and_print_employees(department_employees.to_vec());
     } else {
-        println!("No employees found in the {} department", department);
+        println!(
+            "{}",
+            Colors::Red.print(&format!(
+                "No employees found in the \x1B[1m{}\x1B[22m department",
+                department
+            ))
+        );
     }
 }
 
@@ -128,6 +173,28 @@ fn sort_and_print_employees(employees: Vec<String>) {
     let names: Vec<String> = employees.iter().map(|name| name.to_string()).collect();
 
     for name in names {
-        println!("{}", name);
+        println!("{}", Colors::Yellow.print(&format!("{}", name)));
+    }
+}
+
+enum Colors {
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+}
+
+impl Colors {
+    fn print(&self, text: &str) -> String {
+        match self {
+            Colors::Red => format!("\x1b[31m{}\x1b[0m", text),
+            Colors::Green => format!("\x1b[32m{}\x1b[0m", text),
+            Colors::Yellow => format!("\x1b[33m{}\x1b[0m", text),
+            Colors::Blue => format!("\x1b[34m{}\x1b[0m", text),
+            Colors::Magenta => format!("\x1b[35m{}\x1b[0m", text),
+            Colors::Cyan => format!("\x1b[36m{}\x1b[0m", text),
+        }
     }
 }
