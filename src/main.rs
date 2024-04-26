@@ -135,6 +135,9 @@ fn add_employee_to_department(
 }
 
 fn list_all_departments_with_employees(company: &mut HashMap<String, Vec<String>>) {
+    let mut company: Vec<_> = company.into_iter().collect();
+    company.sort();
+
     for (department, employees) in company.iter() {
         println!(
             "{}",
@@ -170,7 +173,8 @@ fn list_employees_by_department(department: &String, company: &mut HashMap<Strin
 }
 
 fn sort_and_print_employees(employees: Vec<String>) {
-    let names: Vec<String> = employees.iter().map(|name| name.to_string()).collect();
+    let mut names: Vec<String> = employees.iter().map(|name| name.to_string()).collect();
+    names.sort();
 
     for name in names {
         println!("{}", Colors::Yellow.print(&format!("{}", name)));
