@@ -50,7 +50,7 @@ fn handle_option(option: String, company: &mut HashMap<String, Vec<String>>) -> 
             None
         }
         Some(Command::List(department)) => {
-            println!("{department}");
+            list_employees_by_department(&department, company);
             None
         }
         Some(Command::All) => {
@@ -105,4 +105,21 @@ fn add_employee_to_department(
         "Added {} to {} department successfully!!!",
         employee_name, department
     );
+}
+
+fn list_employees_by_department(department: &String, company: &mut HashMap<String, Vec<String>>) {
+    if let Some(department_employees) = company.get(department) {
+        println!("Employees in the {} department:", department);
+        sort_and_print_employees(department_employees.to_vec());
+    } else {
+        println!("No employees found in the {} department", department);
+    }
+}
+
+fn sort_and_print_employees(employees: Vec<String>) {
+    let names: Vec<String> = employees.iter().map(|name| name.to_string()).collect();
+
+    for name in names {
+        println!("{}", name);
+    }
 }
